@@ -34,7 +34,7 @@ from model import GPTConfig, GPT
 # I/O
 out_dir = 'out'
  
-eval_interval = 2000
+eval_interval = 20
 log_interval = 1
 eval_iters = 200
 eval_only = False # if True, script exits right after the first eval
@@ -271,6 +271,7 @@ while True:
 
     # evaluate the loss on train/val sets and write checkpoints
     if iter_num % eval_interval == 0 and master_process:
+        print("should be saving now")
         losses = estimate_loss()
         print(f"step {iter_num}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
         if wandb_log:
