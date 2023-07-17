@@ -206,7 +206,7 @@ if compile:
     ckpt_path1 = os.path.join(out_dir, 'ckpt_init.pt')
 
     checkpoint1 = {
-                    'model': raw_model.state_dict(),
+                    'model': model.state_dict(),
                     'optimizer': optimizer.state_dict(),
                     'model_args': model_args,
                     'iter_num': iter_num,
