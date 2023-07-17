@@ -268,7 +268,7 @@ while True:
     lr = get_lr(iter_num) if decay_lr else learning_rate
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
-
+    print("iter_num: " + str(iter_num) + ", eval interval: " + str(eval_interval))
     # evaluate the loss on train/val sets and write checkpoints
     if iter_num % eval_interval == 0 and master_process:
         print("should be saving now")
