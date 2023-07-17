@@ -33,6 +33,7 @@ from model import GPTConfig, GPT
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
 out_dir = 'out'
+ 
 eval_interval = 2000
 log_interval = 1
 eval_iters = 200
@@ -202,7 +203,7 @@ checkpoint = None # free up memory
 if compile:
     print("compiling the model... (takes a ~minute)")
     unoptimized_model = model
-    ckpt_path1 = os.path.join(out_dir, 'ckpt.pt')
+    ckpt_path1 = os.path.join(out_dir, 'ckpt_init.pt')
 
     checkpoint1 = {
                     'model': raw_model.state_dict(),
