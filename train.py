@@ -295,7 +295,7 @@ while True:
                     'config': config,
                 }
                 print(f"saving checkpoint to {out_dir}")
-                torch.save(checkpoint, os.path.join(out_dir, 'ckpt-'+str(eval_num) + .pt))
+                torch.save(checkpoint, os.path.join(out_dir, 'ckpt-'+str(eval_num) + '.pt'))
     if iter_num == 0 and eval_only:
         break
 
