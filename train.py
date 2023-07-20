@@ -34,7 +34,7 @@ from model import GPTConfig, GPT
 # I/O
 out_dir = 'out'
  
-eval_interval = 20
+eval_interval = 2000
 log_interval = 1
 eval_iters = 200
 eval_only = False # if True, script exits right after the first eval
@@ -268,9 +268,10 @@ while True:
     lr = get_lr(iter_num) if decay_lr else learning_rate
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
-    print("iter_num: " + str(iter_num) + ", eval interval: " + str(eval_interval))
+
     # evaluate the loss on train/val sets and write checkpoints
     if iter_num % eval_interval == 0 and master_process:
+        eval_num = int(iter_num//eval_interval)
         print("should be saving now")
         losses = estimate_loss()
         print(f"step {iter_num}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
@@ -294,7 +295,7 @@ while True:
                     'config': config,
                 }
                 print(f"saving checkpoint to {out_dir}")
-                torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
+                torch.save(checkpoint, os.path.join(out_dir, 'ckpt-'+str(eval_num) + .pt))
     if iter_num == 0 and eval_only:
         break
 
