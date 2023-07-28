@@ -130,6 +130,7 @@ class GPT(nn.Module):
             h = nn.ModuleList([Block(config) for _ in range(config.n_layer)]),
             ln_f = LayerNorm(config.n_embd, bias=config.bias),
         ))
+
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
         # with weight tying when using torch.compile() some warnings get generated:
         # "UserWarning: functional_call was passed multiple values for tied weights.
@@ -139,6 +140,35 @@ class GPT(nn.Module):
 
         # init all weights
         self.apply(self._init_weights)
+
+        # algorithm 1: replace all weight matrices with symmetrized version
+        inner_dim = config.n_embd/config.n_head
+        inner_dim = int(inner_dim)
+        counter=0
+        for pn, p in self.named_parameters():
+            if counter==0: ### delete this
+                if pn.endswith('c_attn.weight'):
+                    print("p shape: " + str(p.shape))
+                    Wq = p[:config.n_embd,:]
+                    Wk = p[config.n_embd:2*config.n_embd,:]
+
+                    for i in range(config.n_head):
+                        if i==0: ### delete this
+                            thisWk=torch.tensor(Wk[i*inner_dim:(i+1)*inner_dim,:]).t()
+                            print("Wk shape: "+ str(thisWk.shape) + ", rank: " + str(torch.linalg.matrix_rank(thisWk)))
+
+                            thisWq=torch.tensor(Wq[i*inner_dim:(i+1)*inner_dim,:]).t()
+                            print("Wq shape: "+ str(thisWq.shape) + ", rank: " + str(torch.linalg.matrix_rank(thisWq)))
+
+                            thisWqk = thisWq @ thisWk.t()
+                            print("thisWqk rank" + str(torch.linalg.matrix_rank(thisWqk))) 
+                            thisWqkSym = .5*( thisWqk + thisWqk.t() )
+                            print("sym rank" + str(torch.linalg.matrix_rank(thisWqkSym))) 
+
+                            U, S, Vh = torch.linalg.svd(thisWqkSym)
+                            print("S: " + str(S))
+
+
         # apply special scaled init to the residual projections, per GPT-2 paper
         for pn, p in self.named_parameters():
             if pn.endswith('c_proj.weight'):
