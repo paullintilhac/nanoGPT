@@ -131,7 +131,7 @@ class GPT(nn.Module):
             ln_f = LayerNorm(config.n_embd, bias=config.bias),
         ))
 
-        self.lm_head = nn.Linear(config.n_embd, 2, bias=False)
+        self.class_head = nn.Linear(config.n_embd, 2, bias=False)
         # with weight tying when using torch.compile() some warnings get generated:
         # "UserWarning: functional_call was passed multiple values for tied weights.
         # This behavior is deprecated and will be an error in future versions"
@@ -188,7 +188,9 @@ class GPT(nn.Module):
         if targets is not None:
             # if we are given some desired targets also calculate the loss
             print("target is not none in model")
-            logits = self.lm_head(x)
+            init_output = self.class_head(x)
+            print("init output shape: " + str(init_output.shape))
+            logit = init_output[:,-1,:]
             print("logits size: " + str(logits.size(-1)))
             x1 = logits.view(-1, logits.size(-1))
             x2 = targets.view(-1)
@@ -197,7 +199,7 @@ class GPT(nn.Module):
         else:
             print("targets is none in model")
             # inference-time mini-optimization: only forward the lm_head on the very last position
-            logits = self.lm_head(x[:, [-1], :]) # note: using list [-1] to preserve the time dim
+            logits = self.class_head(x[:, [-1], :]) # note: using list [-1] to preserve the time dim
             loss = None
 
         return logits, loss
