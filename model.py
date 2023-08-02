@@ -171,8 +171,7 @@ class GPT(nn.Module):
     def forward(self, idx, targets=None):
         if targets is not None:
             print("TARGETS IS NOT NONE")
-            print("x: " + str(idx[:5]))
-            print("y: " + str(targets[:5]))
+            print("input size: " + str(idx.shape) + ", targets size: " + str(targets.shape))
         device = idx.device
         b, t = idx.size()
         assert t <= self.config.block_size, f"Cannot forward sequence of length {t}, block size is only {self.config.block_size}"
@@ -189,6 +188,7 @@ class GPT(nn.Module):
         if targets is not None:
             # if we are given some desired targets also calculate the loss
             logits = self.lm_head(x)
+            print("logits size: " + str(logits.shape))
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
         else:
             # inference-time mini-optimization: only forward the lm_head on the very last position
