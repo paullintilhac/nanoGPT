@@ -191,7 +191,7 @@ class GPT(nn.Module):
             init_output = self.class_head(x)
             print("init output shape: " + str(init_output.shape))
             logits = init_output[:,-1,:]
-            print("logits size: " + str(logit.size(-1)))
+            print("logits size: " + str(logits.shape))
             x1 = logits.view(-1, logits.size(-1))
             x2 = targets.view(-1)
             print("x size: " + str(x1.shape) + ", y size: " + str(x2.shape))
