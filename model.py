@@ -190,6 +190,9 @@ class GPT(nn.Module):
             print("target is not none in model")
             logits = self.lm_head(x)
             print("logits size: " + str(logits.size(-1)))
+            x1 = logits.view(-1, logits.size(-1))
+            x2 = targets.view(-1)
+            print("x size: " + str(x1.shape) + ", y size: " + str(x2.shape))
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
         else:
             print("targets is none in model")
