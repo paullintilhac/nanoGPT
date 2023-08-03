@@ -119,6 +119,10 @@ train_y = torch.load("train_y.pt")
 val_data = torch.load("val_x.pt")
 val_y = torch.load("val_y.pt")
 
+train_data = train_data[:50000]
+train_y = train_y[:50000]
+val_data = val_data[:10000]
+val_y = val_y[:10000]
 print("loaded datasets")
 def get_batch(split):
     if split == 'train' :

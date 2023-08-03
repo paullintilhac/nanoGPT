@@ -169,9 +169,9 @@ class GPT(nn.Module):
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
 
     def forward(self, idx, targets=None):
-        if targets is not None:
-            print("TARGETS IS NOT NONE")
-            print("input size: " + str(idx.shape) + ", targets size: " + str(targets.shape))
+        # if targets is not None:
+            # print("TARGETS IS NOT NONE")
+            # print("input size: " + str(idx.shape) + ", targets size: " + str(targets.shape))
         device = idx.device
         b, t = idx.size()
         assert t <= self.config.block_size, f"Cannot forward sequence of length {t}, block size is only {self.config.block_size}"
@@ -187,19 +187,19 @@ class GPT(nn.Module):
 
         if targets is not None:
             # if we are given some desired targets also calculate the loss
-            print("target is not none in model")
+            # print("target is not none in model")
             init_output = self.class_head(x)
-            print("init output shape: " + str(init_output.shape))
+            # print("init output shape: " + str(init_output.shape))
             logits = init_output[:,-1,:]
 
-            print("logits size: " + str(logits.shape))
+            # print("logits size: " + str(logits.shape))
             x1 = logits.view(-1, logits.size(-1))
             x2 = targets.view(-1)
-            print("x size: " + str(x1.shape) + ", y size: " + str(x2.shape))
+            # print("x size: " + str(x1.shape) + ", y size: " + str(x2.shape))
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
-            print("loss: " + str(loss))
+            # print("loss: " + str(loss))
         else:
-            print("targets is none in model")
+            # print("targets is none in model")
             # inference-time mini-optimization: only forward the lm_head on the very last position
             logits = self.class_head(x[:, [-1], :]) # note: using list [-1] to preserve the time dim
             loss = None
