@@ -39,11 +39,11 @@ args = {"language": {
           "test_max_length": 64,
           "test_max_stack_depth": 5,
           "test_min_length": 1,
-          "test_sample_count": 30000,
+          "test_sample_count": 100000,
           "train_max_length": 64,
           "train_max_stack_depth": 5,
           "train_min_length": 1,
-          "train_sample_count": 150000,
+          "train_sample_count": 500000,
           "evaluate": False
      },
 
