@@ -33,7 +33,8 @@ from model import GPTConfig, GPT
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
 out_dir = 'out'
- 
+VOCAB_SIZE = 5 ### danger: this should really be derived from the data
+
 eval_interval = 2000
 log_interval = 1
 eval_iters = 200
@@ -126,10 +127,12 @@ def get_batch(split):
     else: 
         data= val_data
         y=val_y
-    ix = torch.randint( (batch_size,))
+    ix = torch.randint(len(data) - block_size, (batch_size,))
+    print("len(ix): " + str(len(ix)))
+    print("dim data: " + str(data.shape))
     x=data[ix]
-    x = torch.stack([torch.from_numpy((data[i:i+block_size]).astype(np.int64)) for i in ix])
-    y = torch.stack([torch.from_numpy((data[i+1:i+1+block_size]).astype(np.int64)) for i in ix])
+    print("dim x: " + str(x.shape))
+    print("dim y: " + str(y.shape))
     if device_type == 'cuda':
         # pin arrays x,y, which allows us to move them to GPU asynchronously (non_blocking=True)
         x, y = x.pin_memory().to(device, non_blocking=True), y.pin_memory().to(device, non_blocking=True)
@@ -140,16 +143,7 @@ def get_batch(split):
 # init these up here, can override if init_from='resume' (i.e. from a checkpoint)
 iter_num = 0
 best_val_loss = 1e9
-
-# attempt to derive vocab_size from the dataset
-meta_path = os.path.join(data_dir, 'meta.pkl')
-meta_vocab_size = None
-if os.path.exists(meta_path):
-    with open(meta_path, 'rb') as f:
-        meta = pickle.load(f)
-    meta_vocab_size = meta['vocab_size']
-    print(f"found vocab_size = {meta_vocab_size} (inside {meta_path})")
-
+meta_vocab_size=None
 # model init
 model_args = dict(n_layer=n_layer, n_head=n_head, n_embd=n_embd, block_size=block_size,
                   bias=bias, vocab_size=None, dropout=dropout) # start with model_args from command line
@@ -158,8 +152,10 @@ if init_from == 'scratch':
     print("Initializing a new model from scratch")
     # determine the vocab size we'll use for from-scratch training
     if meta_vocab_size is None:
-        print("defaulting to vocab_size of GPT-2 to 50304 (50257 rounded up for efficiency)")
-    model_args['vocab_size'] = meta_vocab_size if meta_vocab_size is not None else 50304
+        #print("defaulting to vocab_size of GPT-2 to 50304 (50257 rounded up for efficiency)")
+        print("defaulting to vocab_size of GPT-2 to " + str(VOCAB_SIZE))
+
+    model_args['vocab_size'] = meta_vocab_size if meta_vocab_size is not None else VOCAB_SIZE
     gptconf = GPTConfig(**model_args)
     model = GPT(gptconf)
 elif init_from == 'resume':
