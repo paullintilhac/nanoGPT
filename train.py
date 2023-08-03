@@ -131,6 +131,7 @@ def get_batch(split):
     print("len(ix): " + str(len(ix)))
     print("dim data: " + str(data.shape))
     x=data[ix]
+    y=y[ix]
     print("dim x: " + str(x.shape))
     print("dim y: " + str(y.shape))
     if device_type == 'cuda':
