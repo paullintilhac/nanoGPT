@@ -35,15 +35,15 @@ args = {"language": {
           "dev_max_length": 180,
           "dev_max_stack_depth": 5,
           "dev_min_length": 1,
-          "dev_sample_count":  20000,
+          "dev_sample_count":  5000,
           "test_max_length": 180,
           "test_max_stack_depth": 5,
           "test_min_length": 1,
-          "test_sample_count": 500000,
+          "test_sample_count": 30000,
           "train_max_length": 180,
           "train_max_stack_depth": 5,
           "train_min_length": 1,
-          "train_sample_count": 3000000,
+          "train_sample_count": 150000,
           "evaluate": False
      },
 
