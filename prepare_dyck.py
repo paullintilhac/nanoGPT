@@ -64,8 +64,8 @@ max_val_len = np.max(val_dat["length"])
 print("max train len: " + str(max_train_len))
 print("max val len: " + str(max_val_len))
 
-train_dat[0] = train_dat[0].str.pad(width=max_train_len+1,side = "left",fillchar="#")
-val_dat[0] = val_dat[0].str.pad(width=max_train_len+1,side = "left",fillchar="#")
+train_dat[0] = train_dat[0].str.pad(width=64,side = "left",fillchar="#")
+val_dat[0] = val_dat[0].str.pad(width=64,side = "left",fillchar="#")
 
 train_dat.to_csv("train_dat_preprocessed.csv")
 val_dat.to_csv("val_dat_preprocessed.csv")
