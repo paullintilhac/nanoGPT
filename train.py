@@ -119,7 +119,7 @@ train_y = torch.load("train_y.pt")
 val_data = torch.load("val_x.pt")
 val_y = torch.load("val_y.pt")
 
-
+print("loaded datasets")
 def get_batch(split):
     if split == 'train' :
         data = train_data 
@@ -128,12 +128,12 @@ def get_batch(split):
         data= val_data
         y=val_y
     ix = torch.randint(len(data) - block_size, (batch_size,))
-    print("len(ix): " + str(len(ix)))
-    print("dim data: " + str(data.shape))
+    # print("len(ix): " + str(len(ix)))
+    # print("dim data: " + str(data.shape))
     x=data[ix]
     y=y[ix]
-    print("dim x: " + str(x.shape))
-    print("dim y: " + str(y.shape))
+    # print("dim x: " + str(x.shape))
+    # print("dim y: " + str(y.shape))
     if device_type == 'cuda':
         # pin arrays x,y, which allows us to move them to GPU asynchronously (non_blocking=True)
         x, y = x.pin_memory().to(device, non_blocking=True), y.pin_memory().to(device, non_blocking=True)
@@ -308,6 +308,7 @@ while True:
     # forward backward update, with optional gradient accumulation to simulate larger batch size
     # and using the GradScaler if data type is float16
     for micro_step in range(gradient_accumulation_steps):
+        print("micro step: " + str(micro_step))
         if ddp:
             # in DDP training we only need to sync gradients at the last micro step.
             # the official way to do this is with model.no_sync() context manager, but
