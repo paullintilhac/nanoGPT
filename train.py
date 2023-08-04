@@ -28,12 +28,18 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
 
 from model import GPTConfig, GPT
-
+import json
 # -----------------------------------------------------------------------------
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
+print(os.getcwd())
+infile = open("language_config.json", "r")
+lines = infile.read()
+print("lines: " + str(lines))
+language_conf = json.loads(lines)
 out_dir = 'out'
 VOCAB_SIZE = 5 ### danger: this should really be derived from the data
+
 
 eval_interval = 2000
 log_interval = 1
@@ -44,7 +50,8 @@ init_from = 'scratch' # 'scratch' or 'resume' or 'gpt2*'
 # wandb logging
 wandb_log = True # disabled by default
 wandb_project = 'owt'
-wandb_run_name = 'gpt2' # 'run' + str(time.time())
+wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ "e-"+str(globals()["n_embd"]) # 'run' + str(time.time())
+print("wandb run name: " + str(wandb_run_name))
 # data
 dataset = 'openwebtext'
 gradient_accumulation_steps = 5 * 8 # used to simulate larger batch sizes
@@ -78,6 +85,8 @@ compile = True # use PyTorch 2.0 to compile the model to be faster
 config_keys = [k for k,v in globals().items() if not k.startswith('_') and isinstance(v, (int, float, bool, str))]
 exec(open('configurator.py').read()) # overrides from command line or config file
 config = {k: globals()[k] for k in config_keys} # will be useful for logging
+#merge language config and model run config into one  dict
+config = config | language_conf
 # -----------------------------------------------------------------------------
 
 # various inits, derived attributes, I/O setup

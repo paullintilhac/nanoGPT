@@ -1,6 +1,7 @@
 from dataset import *
 from malform import *
 import sys, getopt
+import json
 # Takes a tuple of the form ({'(a': 0, '(b': 1, 'a)': 2, 'b)': 3, 'START': 4, 'END': 5}, ['a', 'b'])
 # and outputs [('(a', 'a)'),...]
 def make_parens(t):
@@ -71,11 +72,14 @@ args = {"language": {
 
 }
 
-print("K: " + str(K) + ", D: " + str(D))
 
 create_clean_dataset(args)
 deform_dataset(args)
 
+print("K: " + str(K) + ", D: " + str(D))
+logger = json.dumps(args['language'])
+with open("language.config", "w") as outfile:
+    outfile.write(logger)
 
 
 
