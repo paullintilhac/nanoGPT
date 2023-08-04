@@ -296,6 +296,9 @@ while True:
                 }
                 print(f"saving checkpoint to {out_dir}")
                 torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
+            
+    if best_val_loss<0.01:
+        break    
     if iter_num == 0 and eval_only:
         break
 
