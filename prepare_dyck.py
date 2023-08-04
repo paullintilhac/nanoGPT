@@ -99,6 +99,12 @@ train_x  = np.concatenate( train_dat[0].values, axis=0 )
 train_n_tot = len(train_x)
 train_x = torch.tensor(train_x.reshape(train_n,int(train_n_tot/train_n)))
 train_y = torch.tensor(train_dat[1].to_numpy())
+
+train_data = train_data[:50000]
+train_y = train_y[:50000]
+val_data = val_data[:10000]
+val_y = val_y[:10000]
+
 print("train x shape: " + str(train_x.shape))
 print("train y shape: " + str(train_y.shape))
 torch.save(train_x,"train_x.pt")

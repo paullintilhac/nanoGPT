@@ -40,6 +40,13 @@ language_conf = json.loads(lines)
 out_dir = 'out'
 VOCAB_SIZE = 5 ### danger: this should really be derived from the data
 
+train_data=torch.load("train_x.pt")
+train_y = torch.load("train_y.pt")
+val_data = torch.load("val_x.pt")
+val_y = torch.load("val_y.pt")
+
+language_conf['train_size'] = len(train_data)
+language_conf['val_size'] = len(val_data)
 
 eval_interval = 2000
 log_interval = 1
@@ -124,15 +131,6 @@ ptdtype = {'float32': torch.float32, 'bfloat16': torch.bfloat16, 'float16': torc
 ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=device_type, dtype=ptdtype)
 
 # poor man's data loader
-train_data=torch.load("train_x.pt")
-train_y = torch.load("train_y.pt")
-val_data = torch.load("val_x.pt")
-val_y = torch.load("val_y.pt")
-
-train_data = train_data[:50000]
-train_y = train_y[:50000]
-val_data = val_data[:10000]
-val_y = val_y[:10000]
 print("loaded datasets")
 def get_batch(split):
     if split == 'train' :
