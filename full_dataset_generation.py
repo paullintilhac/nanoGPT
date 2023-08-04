@@ -29,19 +29,31 @@ def deform_dataset(args):
 				for tokenized_line in tokenized_lines:
 					deformed_s = deform(s=tokenized_line[:-1], parens=parens)
 					corrupt_dataset.write(" ".join(deformed_s) + tokenized_line[-1])
+D=3
+K=3
+for opt, arg in opts:
+      if opt == '-D':
+         print ('max depth ' +str(D) ' of dyck language being overridden')
+         D = int(arg)
+      elif opt == '-K':
+         print ('bracket complexity ' +str(K) ' of dyck language being overridden')
+         K = int(arg)
+      
+   print ('Input file is ', inputfile)
+   print ('Output file is ', outputfile)
 
 args = {"language": {
-          "bracket_types": 2,
+          "bracket_types": K,
           "dev_max_length": 64,
-          "dev_max_stack_depth": 5,
+          "dev_max_stack_depth": D,
           "dev_min_length": 1,
           "dev_sample_count":  5000,
           "test_max_length": 64,
-          "test_max_stack_depth": 5,
+          "test_max_stack_depth": D,
           "test_min_length": 1,
           "test_sample_count": 30000,
           "train_max_length": 64,
-          "train_max_stack_depth": 5,
+          "train_max_stack_depth": D,
           "train_min_length": 1,
           "train_sample_count": 150000,
           "evaluate": False
