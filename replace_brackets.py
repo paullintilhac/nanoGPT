@@ -18,5 +18,9 @@ for in_file in file_list:
             line = line.replace('a)', ')')
             line = line.replace('(b', '{')
             line = line.replace('b)', '}')
+            line = line.replace('(c', '<')
+            line = line.replace('c)', '>')
+            line = line.replace('(d', '[')
+            line = line.replace('d)', ']')
             new_file.write(line)
             # how to write this newline back to the file
