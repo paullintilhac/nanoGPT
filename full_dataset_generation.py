@@ -32,6 +32,7 @@ def deform_dataset(args):
 D=3
 K=3
 for opt, arg in opts:
+     print("opt" + str(opt) + ", args: " + str(arg))
       if opt == '-D':
          print ('max depth ' +str(D) ' of dyck language being overridden')
          D = int(arg)
