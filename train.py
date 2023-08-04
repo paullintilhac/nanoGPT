@@ -48,10 +48,7 @@ eval_only = False # if True, script exits right after the first eval
 always_save_checkpoint = True # if True, always save a checkpoint after each eval
 init_from = 'scratch' # 'scratch' or 'resume' or 'gpt2*'
 # wandb logging
-wandb_log = True # disabled by default
-wandb_project = 'owt'
-wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ "e-"+str(globals()["n_embd"]) # 'run' + str(time.time())
-print("wandb run name: " + str(wandb_run_name))
+
 # data
 dataset = 'openwebtext'
 gradient_accumulation_steps = 5 * 8 # used to simulate larger batch sizes
@@ -87,8 +84,12 @@ exec(open('configurator.py').read()) # overrides from command line or config fil
 config = {k: globals()[k] for k in config_keys} # will be useful for logging
 #merge language config and model run config into one  dict
 config = config | language_conf
+print("config n_embd: " + str(config['n_embd']))
 # -----------------------------------------------------------------------------
-
+wandb_log = True # disabled by default
+wandb_project = 'owt'
+wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ ")-e"+str(globals()["n_embd"]) # 'run' + str(time.time())
+print("wandb run name: " + str(wandb_run_name))
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
 if ddp:
