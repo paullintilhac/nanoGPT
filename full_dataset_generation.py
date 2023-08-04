@@ -1,6 +1,6 @@
 from dataset import *
 from malform import *
-
+import sys, getopt
 # Takes a tuple of the form ({'(a': 0, '(b': 1, 'a)': 2, 'b)': 3, 'START': 4, 'END': 5}, ['a', 'b'])
 # and outputs [('(a', 'a)'),...]
 def make_parens(t):
@@ -31,18 +31,17 @@ def deform_dataset(args):
 					corrupt_dataset.write(" ".join(deformed_s) + tokenized_line[-1])
 D=3
 K=3
+opts, args = getopt.getopt(sys.argv[1:],"D:K:",["D=","K="])
+
 for opt, arg in opts:
-     print("opt" + str(opt) + ", args: " + str(arg))
-      if opt == '-D':
-         print ('max depth ' +str(D) ' of dyck language being overridden')
+     if opt == '-D':
+         print ('max depth ' +str(D) + ' of dyck language being overridden')
          D = int(arg)
-      elif opt == '-K':
-         print ('bracket complexity ' +str(K) ' of dyck language being overridden')
+     elif opt == '-K':
+         print ('bracket complexity ' +str(K) + ' of dyck language being overridden')
          K = int(arg)
       
-   print ('Input file is ', inputfile)
-   print ('Output file is ', outputfile)
-
+   
 args = {"language": {
           "bracket_types": K,
           "dev_max_length": 64,
@@ -71,6 +70,8 @@ args = {"language": {
      }
 
 }
+
+print("K: " + str(K) + ", D: " + str(D))
 
 create_clean_dataset(args)
 deform_dataset(args)
