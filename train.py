@@ -307,6 +307,7 @@ while True:
                 torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
             
     if best_val_loss<0.01:
+        print("REACHED DESIRED VALIDATION LOSS -- TEMRINATING EARLY")
         break    
     if iter_num == 0 and eval_only:
         break
