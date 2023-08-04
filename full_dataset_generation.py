@@ -72,7 +72,18 @@ args = {"language": {
 
 }
 
-
+# making this script idempotent
+print("deleting old files...")
+try:
+    os.remove(args['corpus']['train_corpus_loc'])
+    os.remove(args['corpus']['dev_corpus_loc'])
+    os.remove(args['corpus']['test_corpus_loc'])
+    os.remove(args['corpus']['malformed_train_corpus_loc'])
+    os.remove(args['corpus']['malformed_train_corpus_loc'])
+    os.remove(args['corpus']['malformed_train_corpus_loc'])
+except OSError:
+    pass
+print("old files deleted")
 create_clean_dataset(args)
 deform_dataset(args)
 
