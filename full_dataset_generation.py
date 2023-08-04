@@ -34,12 +34,13 @@ D=3
 K=3
 opts, args = getopt.getopt(sys.argv[1:],"D:K:",["D=","K="])
 
+print("args: " +str(args) + ", opts: " +str(opts))
 for opt, arg in opts:
      if opt == '-D':
-         print ('max depth ' +str(D) + ' of dyck language being overridden')
+         print ('max depth ' +str(D) + ' of dyck language being overridden with D=' + str(arg))
          D = int(arg)
      elif opt == '-K':
-         print ('bracket complexity ' +str(K) + ' of dyck language being overridden')
+         print ('bracket complexity ' +str(K) + ' of dyck language being overridden with K='+str(arg))
          K = int(arg)
       
    
