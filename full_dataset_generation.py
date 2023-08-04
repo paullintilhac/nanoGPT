@@ -89,7 +89,7 @@ deform_dataset(args)
 
 print("K: " + str(K) + ", D: " + str(D))
 logger = json.dumps(args['language'])
-with open("language.config", "w") as outfile:
+with open("language_config.json", "w") as outfile:
     outfile.write(logger)
 
 
