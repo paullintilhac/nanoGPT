@@ -100,9 +100,9 @@ train_n_tot = len(train_x)
 train_x = torch.tensor(train_x.reshape(train_n,int(train_n_tot/train_n)))
 train_y = torch.tensor(train_dat[1].to_numpy())
 
-train_data = train_data[:50000]
+train_x = train_x[:50000]
 train_y = train_y[:50000]
-val_data = val_data[:10000]
+val_x = val_x[:10000]
 val_y = val_y[:10000]
 
 print("train x shape: " + str(train_x.shape))
