@@ -32,7 +32,8 @@ def deform_dataset(args):
 					corrupt_dataset.write(" ".join(deformed_s) + tokenized_line[-1])
 D=3
 K=3
-opts, args = getopt.getopt(sys.argv[1:],"D:K:",["D=","K="])
+C=64
+opts, args = getopt.getopt(sys.argv[1:],"D:K:C:",["D=","K=","C="])
 
 print("args: " +str(args) + ", opts: " +str(opts))
 for opt, arg in opts:
@@ -42,19 +43,22 @@ for opt, arg in opts:
      elif opt == '-K':
          print ('bracket complexity ' +str(K) + ' of dyck language being overridden with K='+str(arg))
          K = int(arg)
+     elif opt == '-C':
+         print ('context window ' +str(C) + ' of dyck language being overridden with C='+str(arg))
+         C = int(arg)
       
-   
+print("BEFORE: K: " + str(K) + ", D: " + str(D) + ", C: " + str(C))
 args = {"language": {
           "bracket_types": K,
-          "dev_max_length": 64,
+          "dev_max_length": C,
           "dev_max_stack_depth": D,
           "dev_min_length": 1,
           "dev_sample_count":  5000,
-          "test_max_length": 64,
+          "test_max_length": C,
           "test_max_stack_depth": D,
           "test_min_length": 1,
           "test_sample_count": 30000,
-          "train_max_length": 64,
+          "train_max_length": C,
           "train_max_stack_depth": D,
           "train_min_length": 1,
           "train_sample_count": 150000,
@@ -88,7 +92,7 @@ print("old files deleted")
 create_clean_dataset(args)
 deform_dataset(args)
 
-print("K: " + str(K) + ", D: " + str(D))
+print("K: " + str(K) + ", D: " + str(D) + ", C: " + str(C))
 logger = json.dumps(args['language'])
 with open("language_config.json", "w") as outfile:
     outfile.write(logger)

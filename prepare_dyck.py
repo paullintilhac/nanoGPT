@@ -10,12 +10,19 @@ import requests
 import numpy as np
 import pandas as pd
 import torch
+import json
 # download the dyck dataset
 val_path1 =  'data/dyck-clean-val-rep.txt'
 val_path2 = 'data/dyck-corrupted-val-rep.txt'
 train_path1 =  'data/dyck-clean-train-rep.txt'
 train_path2 =  'data/dyck-corrupted-train-rep.txt'
-MAX_LEN = 128
+
+infile = open("language_config.json", "r")
+lines = infile.read()
+print("lines: " + str(lines))
+language_conf = json.loads(lines)
+
+MAX_LEN = language_conf['train_max_len']
 PAD_TOKEN = "#"
 train_dat1 = pd.read_csv(train_path1,header=None)
 train_dat2 = pd.read_csv(train_path2,header=None)
@@ -69,8 +76,8 @@ max_val_len = np.max(val_dat["length"])
 print("max train len: " + str(max_train_len))
 print("max val len: " + str(max_val_len))
 
-train_dat[0] = train_dat[0].str.pad(width=64,side = "left",fillchar=PAD_TOKEN)
-val_dat[0] = val_dat[0].str.pad(width=64,side = "left",fillchar=PAD_TOKEN)
+train_dat[0] = train_dat[0].str.pad(width=MAX_LEN,side = "left",fillchar=PAD_TOKEN)
+val_dat[0] = val_dat[0].str.pad(width=MAX_LEN,side = "left",fillchar=PAD_TOKEN)
 
 train_dat.to_csv("train_dat_preprocessed.csv")
 val_dat.to_csv("val_dat_preprocessed.csv")
