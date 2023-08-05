@@ -16,18 +16,7 @@ val_path2 = 'data/dyck-corrupted-val-rep.txt'
 train_path1 =  'data/dyck-clean-train-rep.txt'
 train_path2 =  'data/dyck-corrupted-train-rep.txt'
 MAX_LEN = 128
-chars = ["#","(",")","{","}"] # this needs to be replaced with a set function
-vocab_size = len(chars)
-
-# create a mapping from characters to integers
-stoi = { ch:i for i,ch in enumerate(chars) }
-itos = { i:ch for i,ch in enumerate(chars) }
-
-def encode(s):
-    return [stoi[c] for c in s] # encoder: take a string, output a list of integers
-def decode(l):
-    return ''.join([itos[i] for i in l]) # decoder: take a list of integers, output a string
-
+PAD_TOKEN = "#"
 train_dat1 = pd.read_csv(train_path1,header=None)
 train_dat2 = pd.read_csv(train_path2,header=None)
 val_dat1 = pd.read_csv(val_path1,header=None)
@@ -36,6 +25,22 @@ train_dat1[1] = 1
 train_dat2[1] = 0
 val_dat1[1] = 1
 val_dat2[1]=0
+unique_chars = set(train_dat1[0].apply(list).sum())
+unique_chars.remove("E")
+unique_chars.remove("N")
+unique_chars.remove("D")
+unique_chars.remove(" ")
+unique_chars.add("#")
+vocab_size = len(unique_chars)
+
+# create a mapping from characters to integers
+stoi = { ch:i for i,ch in enumerate(unique_chars) }
+itos = { i:ch for i,ch in enumerate(unique_chars) }
+
+def encode(s):
+    return [stoi[c] for c in s] # encoder: take a string, output a list of integers
+def decode(l):
+    return ''.join([itos[i] for i in l]) # decoder: take a list of integers, output a string
 
 
 train_dat = pd.concat([train_dat1,train_dat2])
@@ -64,8 +69,8 @@ max_val_len = np.max(val_dat["length"])
 print("max train len: " + str(max_train_len))
 print("max val len: " + str(max_val_len))
 
-train_dat[0] = train_dat[0].str.pad(width=64,side = "left",fillchar="#")
-val_dat[0] = val_dat[0].str.pad(width=64,side = "left",fillchar="#")
+train_dat[0] = train_dat[0].str.pad(width=64,side = "left",fillchar=PAD_TOKEN)
+val_dat[0] = val_dat[0].str.pad(width=64,side = "left",fillchar=PAD_TOKEN)
 
 train_dat.to_csv("train_dat_preprocessed.csv")
 val_dat.to_csv("val_dat_preprocessed.csv")

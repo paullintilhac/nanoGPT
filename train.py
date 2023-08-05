@@ -38,13 +38,13 @@ lines = infile.read()
 print("lines: " + str(lines))
 language_conf = json.loads(lines)
 out_dir = 'out'
-VOCAB_SIZE = 5 ### danger: this should really be derived from the data
 
 train_data=torch.load("train_x.pt")
 train_y = torch.load("train_y.pt")
 val_data = torch.load("val_x.pt")
 val_y = torch.load("val_y.pt")
 
+VOCAB_SIZE = len(torch.unique(val_data))
 language_conf['train_size'] = len(train_data)
 language_conf['val_size'] = len(val_data)
 
