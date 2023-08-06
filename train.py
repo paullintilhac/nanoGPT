@@ -38,7 +38,7 @@ lines = infile.read()
 print("lines: " + str(lines))
 language_conf = json.loads(lines)
 out_dir = 'out'
-
+max_len = language_conf['train_max_length']
 train_data=torch.load("train_x.pt")
 train_y = torch.load("train_y.pt")
 val_data = torch.load("val_x.pt")
@@ -65,6 +65,7 @@ block_size = 1024
 n_layer = 12
 n_head = 12
 n_embd = 768
+mlp_factor = 4
 dropout = 0.0 # for pretraining 0 is good, for finetuning try 0.1+
 bias = False # do we use bias inside LayerNorm and Linear layers?
 # adamw optimizer
@@ -89,13 +90,15 @@ compile = True # use PyTorch 2.0 to compile the model to be faster
 config_keys = [k for k,v in globals().items() if not k.startswith('_') and isinstance(v, (int, float, bool, str))]
 exec(open('configurator.py').read()) # overrides from command line or config file
 config = {k: globals()[k] for k in config_keys} # will be useful for logging
+print("config: " + str(config))
 #merge language config and model run config into one  dict
 config = config | language_conf
+assert(config.block_size>max_len)
 print("config n_embd: " + str(config['n_embd']))
 # -----------------------------------------------------------------------------
 wandb_log = True # disabled by default
 wandb_project = 'owt'
-wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ ")-e"+str(globals()["n_embd"]) # 'run' + str(time.time())
+wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ ")-e"+str(globals()["n_embd"]+"-L"+str(language_conf['train_max_length']) # 'run' + str(time.time())
 print("wandb run name: " + str(wandb_run_name))
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
@@ -174,7 +177,7 @@ if init_from == 'scratch':
 elif init_from == 'resume':
     print(f"Resuming training from {out_dir}")
     # resume training from a checkpoint.
-    ckpt_path = os.path.join(out_dir, 'ckpt.pt')
+    ckpt_path = os.path.join(out_dir, wandb_run_name+'.pt')
     checkpoint = torch.load(ckpt_path, map_location=device)
     checkpoint_model_args = checkpoint['model_args']
     # force these config attributes to be equal otherwise we can't even resume training
@@ -303,7 +306,7 @@ while True:
                     'config': config,
                 }
                 print(f"saving checkpoint to {out_dir}")
-                torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
+                torch.save(checkpoint, os.path.join(out_dir, wandb_run_name'.pt'))
             
     if best_val_loss<0.01:
         print("REACHED DESIRED VALIDATION LOSS -- TEMRINATING EARLY")
