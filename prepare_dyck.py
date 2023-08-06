@@ -22,7 +22,8 @@ lines = infile.read()
 print("lines: " + str(lines))
 language_conf = json.loads(lines)
 
-MAX_LEN = language_conf['train_max_len']
+MAX_LEN = language_conf['train_max_length']
+print("max len: " + str(MAX_LEN))
 PAD_TOKEN = "#"
 train_dat1 = pd.read_csv(train_path1,header=None)
 train_dat2 = pd.read_csv(train_path2,header=None)
