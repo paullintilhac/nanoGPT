@@ -93,7 +93,7 @@ config = {k: globals()[k] for k in config_keys} # will be useful for logging
 print("config: " + str(config))
 #merge language config and model run config into one  dict
 config = config | language_conf
-assert(config['block_size']>max_len)
+assert(config['block_size']>=max_len)
 print("config n_embd: " + str(config['n_embd']))
 # -----------------------------------------------------------------------------
 wandb_log = True # disabled by default
