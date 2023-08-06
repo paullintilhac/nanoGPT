@@ -98,7 +98,7 @@ print("config n_embd: " + str(config['n_embd']))
 # -----------------------------------------------------------------------------
 wandb_log = True # disabled by default
 wandb_project = 'owt'
-wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ ")-e"+str(globals()["n_embd"]+"-L"+str(language_conf['train_max_length']) # 'run' + str(time.time())
+wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ ")-e"+str(globals()["n_embd"])+"-L"+str(language_conf['train_max_length']) # 'run' + str(time.time())
 print("wandb run name: " + str(wandb_run_name))
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
