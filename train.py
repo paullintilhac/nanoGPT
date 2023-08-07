@@ -94,7 +94,7 @@ print("config: " + str(config))
 #merge language config and model run config into one  dict
 config = config | language_conf
 assert(config['block_size']>=max_len)
-print("mlp multiplier: " + str(config['mll_factor']))
+print("mlp multiplier: " + str(config['mlp_factor']))
 # -----------------------------------------------------------------------------
 wandb_log = True # disabled by default
 wandb_project = 'owt'
