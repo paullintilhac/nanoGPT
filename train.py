@@ -94,11 +94,12 @@ print("config: " + str(config))
 #merge language config and model run config into one  dict
 config = config | language_conf
 assert(config['block_size']>=max_len)
-print("mlp multiplier: " + str(config['mlp_factor']))
+#print("mlp multiplier: " + str(config['mlp_factor']))
 # -----------------------------------------------------------------------------
 wandb_log = True # disabled by default
 wandb_project = 'owt'
-wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ ")-e"+str(globals()["n_embd"])+"-L"+str(language_conf['train_max_length']) +"-M"+str(globals()["mlp_factor"]) # 'run' + str(time.time())
+# +"-M"+str(globals()["mlp_factor"]) 
+wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ ")-e"+str(globals()["n_embd"])+"-L"+str(language_conf['train_max_length'])# 'run' + str(time.time())
 print("wandb run name: " + str(wandb_run_name))
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
