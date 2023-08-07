@@ -94,11 +94,11 @@ print("config: " + str(config))
 #merge language config and model run config into one  dict
 config = config | language_conf
 assert(config['block_size']>=max_len)
-print("config n_embd: " + str(config['n_embd']))
+print("mlp multiplier: " + str(config['mll_factor']))
 # -----------------------------------------------------------------------------
 wandb_log = True # disabled by default
 wandb_project = 'owt'
-wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ ")-e"+str(globals()["n_embd"])+"-L"+str(language_conf['train_max_length']) # 'run' + str(time.time())
+wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ ")-e"+str(globals()["n_embd"])+"-L"+str(language_conf['train_max_length']) +"-M"+str(globals()["mlp_factor"]) # 'run' + str(time.time())
 print("wandb run name: " + str(wandb_run_name))
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
@@ -308,7 +308,7 @@ while True:
                 print(f"saving checkpoint to {out_dir}")
                 torch.save(checkpoint, os.path.join(out_dir, wandb_run_name+'.pt'))
             
-    if best_val_loss<0.01:
+    if best_val_loss<0.03:
         print("REACHED DESIRED VALIDATION LOSS -- TEMRINATING EARLY")
         break    
     if iter_num == 0 and eval_only:
