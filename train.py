@@ -307,7 +307,7 @@ while True:
                     'config': config,
                 }
                 print(f"saving checkpoint to {out_dir}")
-                torch.save(checkpoint, os.path.join(out_dir, wandb_run_name+'.pt'))
+                torch.save(checkpoint, os.path.join(out_dir,'ckpt-'+str(eval_num)+":" wandb_run_name+'.pt'))
             
     if best_val_loss<0.06:
         print("REACHED DESIRED VALIDATION LOSS -- TEMRINATING EARLY")
