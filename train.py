@@ -224,6 +224,18 @@ checkpoint = None # free up memory
 
 # compile the model
 if compile:
+    ckpt_path1 = os.path.join(out_dir, 'ckpt_init.pt')
+
+    checkpoint1 = {
+                    'model': model.state_dict(),
+                    'optimizer': optimizer.state_dict(),
+                    'model_args': model_args,
+                    'iter_num': iter_num,
+                    'best_val_loss': best_val_loss,
+                    'config': config,
+                }
+    print(f"saving checkpoint to {ckpt_path1}")
+    torch.save(checkpoint1, ckpt_path1)
     print("compiling the model... (takes a ~minute)")
     unoptimized_model = model
     
