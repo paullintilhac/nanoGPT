@@ -234,11 +234,11 @@ if compile:
                     'best_val_loss': best_val_loss,
                     'config': config,
                 }
+
     print(f"saving checkpoint to {ckpt_path1}")
     torch.save(checkpoint1, ckpt_path1)
     print("compiling the model... (takes a ~minute)")
     unoptimized_model = model
-    
     model = torch.compile(model) # requires PyTorch 2.0
 
 # wrap model into DDP container
@@ -296,9 +296,9 @@ while True:
     # evaluate the loss on train/val sets and write checkpoints
     if iter_num % eval_interval == 0 and master_process:
         eval_num = int(iter_num//eval_interval)
-        print("should be saving now")
+        #print("should be saving now")
         losses = estimate_loss()
-        print(f"step {iter_num}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
+        #print(f"step {iter_num}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
         if wandb_log:
             wandb.log({
                 "iter": iter_num,
@@ -321,7 +321,7 @@ while True:
                 print(f"saving checkpoint to {out_dir}")
                 torch.save(checkpoint, os.path.join(out_dir,'ckpt-'+str(eval_num)+":" + wandb_run_name+'.pt'))
             
-    if best_val_loss<0.06:
+    if best_val_loss<0.01:
         print("REACHED DESIRED VALIDATION LOSS -- TEMRINATING EARLY")
         break    
     if iter_num == 0 and eval_only:
