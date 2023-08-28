@@ -319,7 +319,7 @@ while True:
                 print(f"saving checkpoint to {out_dir}")
                 torch.save(checkpoint, os.path.join(out_dir,'ckpt-'+str(eval_num)+":" + wandb_run_name+'.pt'))
             
-    if best_val_loss<0.01:
+    if best_val_loss<0.001:
         print("REACHED DESIRED VALIDATION LOSS -- TEMRINATING EARLY")
         break    
     if iter_num == 0 and eval_only:
