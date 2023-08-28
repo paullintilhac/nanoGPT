@@ -125,7 +125,7 @@ combinedSets = set(pos_train_data).union(set(neg_train_data)).union(set(pos_val_
 VOCAB_SIZE = len(combinedSets)
 def get_batch(split): 
     posOrNeg = np.random.randint(2, size=batch_size)
-
+    print("batch size: " + str(batch_size)
     xs = []
     ys = []
     for i in range(batch_size):  
@@ -148,6 +148,7 @@ def get_batch(split):
 
     x=torch.stack(xs)
     y=torch.stack(ys)
+    print("done with get_batch")
     
 
 # init these up here, can override if init_from='resume' (i.e. from a checkpoint)
