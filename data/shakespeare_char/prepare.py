@@ -28,12 +28,8 @@ with open(input_file_path2, 'r') as f2:
 print(f"length of shakespeare dataset in characters: {len(data):,}")
 print(f"length of non-shakespeare dataset in characters: {len(data):,}")
 
-# get all the unique characters that occur in this text
-chars = sorted(list(set(data)))
-vocab_size = len(chars)
-print("all the unique characters:", ''.join(chars))
-print(f"vocab size: {vocab_size:,}")
-
+n = len(data)
+n2 = len(data2)
 
 # get all the unique characters that occur in this text
 chars = sorted(list(set(data)))
