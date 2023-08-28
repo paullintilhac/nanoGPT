@@ -53,8 +53,8 @@ def encode(s):
 def decode(l):
     return ''.join([itos[i] for i in l]) # decoder: take a list of integers, output a string
 
-print("data len: " + str(len(data)))
-print("data[:5]: " + str(data[:50]))
+print("short shakespeare sample:  " + str(data[:100]))
+print("short non-shakespeare sample:  " + str(data2[:100]))
 
 train_data = data[:int(n*0.9)]
 val_data = data[int(n*0.9):]
