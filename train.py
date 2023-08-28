@@ -142,7 +142,7 @@ def get_batch(split):
         
         print("index 1: " + str(index1))
         xs.append(torch.from_numpy((data[index1:index1+block_size]).astype(np.int64)))
-        ys.append(torch.tensor([posOrNeg[i]].astype(np.int64)))
+        ys.append(torch.tensor(np.array([posOrNeg[i]]).astype(np.int64)))
     print("xs[0]: " + str(xs[0]))
     print("ys[0]: " + str(ys[0]))
 
