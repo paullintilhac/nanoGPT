@@ -32,19 +32,7 @@ import json
 # -----------------------------------------------------------------------------
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
-print(os.getcwd())
-infile = open("language_config.json", "r")
-lines = infile.read()
-print("lines: " + str(lines))
-language_conf = json.loads(lines)
-out_dir = 'out'
-max_len = language_conf['train_max_length']
 
-VOCAB_SIZE = len(torch.unique(val_data))
-language_conf['train_size'] = len(train_data)
-language_conf['val_size'] = len(val_data)
-
-eval_interval = 2000
 log_interval = 1
 eval_iters = 200
 eval_only = False # if True, script exits right after the first eval
@@ -87,16 +75,11 @@ config_keys = [k for k,v in globals().items() if not k.startswith('_') and isins
 exec(open('configurator.py').read()) # overrides from command line or config file
 config = {k: globals()[k] for k in config_keys} # will be useful for logging
 print("config: " + str(config))
-#merge language config and model run config into one  dict
-config = config | language_conf
-assert(config['block_size']>=max_len)
 #print("mlp multiplier: " + str(config['mlp_factor']))
 # -----------------------------------------------------------------------------
 wandb_log = True # disabled by default
 wandb_project = 'owt'
 # +"-M"+str(globals()["mlp_factor"]) 
-wandb_run_name = 'dyck-('+str(language_conf['bracket_types'])+","+str(language_conf['train_max_stack_depth'])+ ")-e"+str(globals()["n_embd"])+"-L"+str(language_conf['train_max_length'])# 'run' + str(time.time())
-print("wandb run name: " + str(wandb_run_name))
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
 if ddp:
@@ -129,6 +112,8 @@ device_type = 'cuda' if 'cuda' in device else 'cpu' # for later use in torch.aut
 # note: float16 data type will automatically use a GradScaler
 ptdtype = {'float32': torch.float32, 'bfloat16': torch.bfloat16, 'float16': torch.float16}[dtype]
 ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=device_type, dtype=ptdtype)
+
+data_dir = os.path.join('data', dataset)
 
 pos_train_data = np.memmap(os.path.join(data_dir, 'train.bin'), dtype=np.uint16, mode='r')
 pos_val_data = np.memmap(os.path.join(data_dir, 'val.bin'), dtype=np.uint16, mode='r')
@@ -168,8 +153,6 @@ if init_from == 'scratch':
     # determine the vocab size we'll use for from-scratch training
     if meta_vocab_size is None:
         #print("defaulting to vocab_size of GPT-2 to 50304 (50257 rounded up for efficiency)")
-        print("defaulting to vocab_size of GPT-2 to " + str(VOCAB_SIZE))
-
     model_args['vocab_size'] = meta_vocab_size if meta_vocab_size is not None else VOCAB_SIZE
     gptconf = GPTConfig(**model_args)
     model = GPT(gptconf)
