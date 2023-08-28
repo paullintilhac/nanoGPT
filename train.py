@@ -301,7 +301,7 @@ while True:
         eval_num = int(iter_num//eval_interval)
         #print("should be saving now")
         losses = estimate_loss()
-        #print(f"step {iter_num}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
+        print(f"step {iter_num}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
         if wandb_log:
             wandb.log({
                 "iter": iter_num,
