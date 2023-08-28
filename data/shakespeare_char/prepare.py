@@ -60,42 +60,13 @@ def decode(l):
 print("data len: " + str(len(data)))
 print("data[:5]: " + str(data[:50]))
 
-
-# create the train and test splits
-n = len(data)
-n2 = len(data2)
-
 train_data = data[:int(n*0.9)]
 val_data = data[int(n*0.9):]
 train_data2 = data2[:int(n2*0.9)]
 val_data2 = data2[int(n2*0.9):]
 
+train_data = encode(train_data)
 
-train_data[1] = 1
-train_data[1] = 0
-val_data1[1] = 1
-val_data2[1]=0
-
-
-# create a mapping from characters to integers
-stoi = { ch:i for i,ch in enumerate(chars) }
-itos = { i:ch for i,ch in enumerate(chars) }
-
-
-
-train_dat = pd.concat([train_data1,train_data2])
-val_dat = pd.concat([val_data1,val_data2])
-
-train_n = len(train_dat)
-val_n = len(val_dat)
-
-print("train_dat: " + str(train_dat[:3]))
-print("nrows train: " + str(len(train_dat)))
-#prepare to convert to tensor
-train_dat[0]=train_dat[0].apply(encode)
-train_dat[0]=train_dat[0].apply(np.array)
-val_dat[0]=val_dat[0].apply(encode)
-val_dat[0]=val_dat[0].apply(np.array)
 
 print("class train_x: " + str(type(train_dat)))
 print("class of each col: " + str(type(train_dat[0])))
