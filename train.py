@@ -138,7 +138,8 @@ def get_batch(split):
         
         data = train_data if split == 'train' else val_data
 
-        index1 = torch.randint(len(data) - block_size,(1,))
+        index1 = torch.randint(len(data) - block_size,(1,))[0]
+        
         print("index 1: " + str(index1))
         xs.append(torch.from_numpy((data[index1:index1+block_size]).astype(np.int64)))
         ys.append(torch.from_numpy(posOrNeg[index1].astype(np.int64)))
