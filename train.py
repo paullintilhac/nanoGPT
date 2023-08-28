@@ -39,10 +39,6 @@ print("lines: " + str(lines))
 language_conf = json.loads(lines)
 out_dir = 'out'
 max_len = language_conf['train_max_length']
-train_data=torch.load("train_x.pt")
-train_y = torch.load("train_y.pt")
-val_data = torch.load("val_x.pt")
-val_y = torch.load("val_y.pt")
 
 VOCAB_SIZE = len(torch.unique(val_data))
 language_conf['train_size'] = len(train_data)
@@ -134,28 +130,30 @@ device_type = 'cuda' if 'cuda' in device else 'cpu' # for later use in torch.aut
 ptdtype = {'float32': torch.float32, 'bfloat16': torch.bfloat16, 'float16': torch.float16}[dtype]
 ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=device_type, dtype=ptdtype)
 
-# poor man's data loader
-print("loaded datasets")
+pos_train_data = np.memmap(os.path.join(data_dir, 'train.bin'), dtype=np.uint16, mode='r')
+pos_val_data = np.memmap(os.path.join(data_dir, 'val.bin'), dtype=np.uint16, mode='r')
+neg_train_data = np.memmap(os.path.join(data_dir, 'train2.bin'), dtype=np.uint16, mode='r')
+neg_val_data = np.memmap(os.path.join(data_dir, 'val2.bin'), dtype=np.uint16, mode='r')
+
 def get_batch(split):
-    if split == 'train' :
-        data = train_data 
-        y=train_y
-    else: 
-        data= val_data
-        y=val_y
+    posOrNeg = np.random.randint(2, size=batch_size)
     ix = torch.randint(len(data) - block_size, (batch_size,))
-    # print("len(ix): " + str(len(ix)))
-    # print("dim data: " + str(data.shape))
-    x=data[ix]
-    y=y[ix]
-    # print("dim x: " + str(x.shape))
-    # print("dim y: " + str(y.shape))
-    if device_type == 'cuda':
-        # pin arrays x,y, which allows us to move them to GPU asynchronously (non_blocking=True)
-        x, y = x.pin_memory().to(device, non_blocking=True), y.pin_memory().to(device, non_blocking=True)
-    else:
-        x, y = x.to(device), y.to(device)
-    return x, y
+    data = train_data if split == 'train' else val_data
+    xs = []
+    ys = []
+    for i in ix:  
+        if posOrNeg[i]==1:
+            train_data = pos_train_data
+            val_data = pos_val_data
+        else:
+            train_data = neg_train_data
+            val_data = neg_val_data
+        data = train_data if split == 'train' else val_data
+        x.append(torch.from_numpy((data[i:i+block_size]).astype(np.int64)))
+        y.append(torch.from_numpy(posOrNeg[i].astype(np.int64)))
+    x=torch.stack(xs)
+    y=torch.stack(ys)
+    
 
 # init these up here, can override if init_from='resume' (i.e. from a checkpoint)
 iter_num = 0
