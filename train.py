@@ -125,21 +125,23 @@ combinedSets = set(pos_train_data).union(set(neg_train_data)).union(set(pos_val_
 VOCAB_SIZE = len(combinedSets)
 def get_batch(split): 
     posOrNeg = np.random.randint(2, size=batch_size)
-    data = train_data if split == 'train' else val_data
-    ix = torch.randint(len(data) - block_size, (batch_size,))
 
     xs = []
     ys = []
-    for i in ix:  
+    for i in batch_size:  
         if posOrNeg[i]==1:
             train_data = pos_train_data
             val_data = pos_val_data
         else:
             train_data = neg_train_data
             val_data = neg_val_data
+        
         data = train_data if split == 'train' else val_data
-        x.append(torch.from_numpy((data[i:i+block_size]).astype(np.int64)))
-        y.append(torch.from_numpy(posOrNeg[i].astype(np.int64)))
+
+        index1 = torch.randint(len(data) - block_size,)
+
+        x.append(torch.from_numpy((data[index1:index1+block_size]).astype(np.int64)))
+        y.append(torch.from_numpy(posOrNeg[index1].astype(np.int64)))
     x=torch.stack(xs)
     y=torch.stack(ys)
     
