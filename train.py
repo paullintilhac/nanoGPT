@@ -140,8 +140,8 @@ def get_batch(split):
 
         index1 = torch.randint(len(data) - block_size,(1,))
 
-        x.append(torch.from_numpy((data[index1:index1+block_size]).astype(np.int64)))
-        y.append(torch.from_numpy(posOrNeg[index1].astype(np.int64)))
+        xs.append(torch.from_numpy((data[index1:index1+block_size]).astype(np.int64)))
+        ys.append(torch.from_numpy(posOrNeg[index1].astype(np.int64)))
     x=torch.stack(xs)
     y=torch.stack(ys)
     
