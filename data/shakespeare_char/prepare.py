@@ -65,38 +65,35 @@ val_data = data[int(n*0.9):]
 train_data2 = data2[:int(n2*0.9)]
 val_data2 = data2[int(n2*0.9):]
 
-train_data = encode(train_data)
+# encode both to integers
+train_ids = encode(train_data)
+val_ids = encode(val_data)
+print(f"train has {len(train_ids):,} tokens")
+print(f"val has {len(val_ids):,} tokens")
+train_ids2 = encode(train_data2)
+val_ids2 = encode(val_data2)
+print(f"train2 has {len(train_ids2):,} tokens")
+print(f"val2 has {len(val_ids2):,} tokens")
 
+# export to bin files
+train_ids = np.array(train_ids, dtype=np.uint16)
+val_ids = np.array(val_ids, dtype=np.uint16)
+train_ids.tofile(os.path.join(os.path.dirname(__file__), 'train.bin'))
+val_ids.tofile(os.path.join(os.path.dirname(__file__), 'val.bin'))
 
-print("class train_x: " + str(type(train_dat)))
-print("class of each col: " + str(type(train_dat[0])))
-print("dim(valDat)")
-val_x = np.concatenate(val_dat[0].values,axis = 0)
-print("val_x shape after concat: " + str(val_x.shape))
-#val_x  = np.concatenate( val_dat[0], axis=0 )
-val_n_tot = len(val_x)
-# val_x = torch.tensor(val_x)
-val_x = torch.tensor(val_x.reshape(val_n,int(val_n_tot/val_n)))
+# export to bin files
+train_ids2 = np.array(train_ids2, dtype=np.uint16)
+val_ids2 = np.array(val_ids2, dtype=np.uint16)
+train_ids2.tofile(os.path.join(os.path.dirname(__file__), 'train2.bin'))
+val_ids2.tofile(os.path.join(os.path.dirname(__file__), 'val2.bin'))
 
-val_y = torch.tensor(val_dat[1].to_numpy())
-print("val x shape: " + str(val_x.shape))
-print("val y shape: " + str(val_y.shape))
+# save the meta information as well, to help us encode/decode later
+meta = {
+    'vocab_size': vocab_size,
+    'itos': itos,
+    'stoi': stoi,
+}
 
-torch.save(val_x,"val_x.pt")
-torch.save(val_y,"val_y.pt")
-
-train_x  = np.concatenate( train_dat[0].values, axis=0 )
-train_n_tot = len(train_x)
-train_x = torch.tensor(train_x.reshape(train_n,int(train_n_tot/train_n)))
-train_y = torch.tensor(train_dat[1].to_numpy())
-
-train_x = train_x[:50000]
-train_y = train_y[:50000]
-val_x = val_x[:10000]
-val_y = val_y[:10000]
-
-print("train x shape: " + str(train_x.shape))
-print("train y shape: " + str(train_y.shape))
-torch.save(train_x,"train_x.pt")
-torch.save(train_y,"train_y.pt")
+with open(os.path.join(os.path.dirname(__file__), 'meta.pkl'), 'wb') as f:
+    pickle.dump(meta, f)
 
