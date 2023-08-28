@@ -128,7 +128,7 @@ def get_batch(split):
 
     xs = []
     ys = []
-    for i in batch_size:  
+    for i in range(batch_size):  
         if posOrNeg[i]==1:
             train_data = pos_train_data
             val_data = pos_val_data
