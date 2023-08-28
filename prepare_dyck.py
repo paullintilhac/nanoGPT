@@ -29,6 +29,9 @@ train_dat1 = pd.read_csv(train_path1,header=None)
 train_dat2 = pd.read_csv(train_path2,header=None)
 val_dat1 = pd.read_csv(val_path1,header=None)
 val_dat2 = pd.read_csv(val_path2,header=None)
+print("train dat: " + str((train_dat1[:5])))
+
+
 train_dat1[1] = 1
 train_dat2[1] = 0
 val_dat1[1] = 1
