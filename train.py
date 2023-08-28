@@ -15,7 +15,7 @@ $ torchrun --nproc_per_node=8 --nnodes=2 --node_rank=0 --master_addr=123.456.123
 $ torchrun --nproc_per_node=8 --nnodes=2 --node_rank=1 --master_addr=123.456.123.456 --master_port=1234 train.py
 (If your cluster does not have Infiniband interconnect prepend NCCL_IB_DISABLE=1)
 """
-
+print("HI")
 import os
 import time
 import math
@@ -114,13 +114,16 @@ ptdtype = {'float32': torch.float32, 'bfloat16': torch.bfloat16, 'float16': torc
 ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=device_type, dtype=ptdtype)
 
 data_dir = os.path.join('data', dataset)
-
 pos_train_data = np.memmap(os.path.join(data_dir, 'train.bin'), dtype=np.uint16, mode='r')
 pos_val_data = np.memmap(os.path.join(data_dir, 'val.bin'), dtype=np.uint16, mode='r')
 neg_train_data = np.memmap(os.path.join(data_dir, 'train2.bin'), dtype=np.uint16, mode='r')
 neg_val_data = np.memmap(os.path.join(data_dir, 'val2.bin'), dtype=np.uint16, mode='r')
 
-def get_batch(split):
+unique_token_ids = set(pos_train_data)
+print("sizes: " + str(len(set(pos_train_data)))+", "+str(len(set(neg_train_data)))+", "+ str(len(set(pos_val_data)))+", "+str(len(set(neg_val_data))))
+combinedSets = set(pos_train_data).union(set(neg_train_data)).union(set(pos_val_data)).union(set(neg_val_data))
+VOCAB_SIZE = len(combinedSets)
+def get_batch(split): 
     posOrNeg = np.random.randint(2, size=batch_size)
     ix = torch.randint(len(data) - block_size, (batch_size,))
     data = train_data if split == 'train' else val_data
@@ -147,12 +150,17 @@ meta_vocab_size=None
 # model init
 model_args = dict(n_layer=n_layer, n_head=n_head, n_embd=n_embd, block_size=block_size,
                   bias=bias, vocab_size=None, dropout=dropout) # start with model_args from command line
+
 if init_from == 'scratch':
+
     # init a new model from scratch
     print("Initializing a new model from scratch")
     # determine the vocab size we'll use for from-scratch training
+
     if meta_vocab_size is None:
-        #print("defaulting to vocab_size of GPT-2 to 50304 (50257 rounded up for efficiency)")
+        print("defaulting to vocab_size of GPT-2 to 50304 (50257 rounded up for efficiency)")
+    print(" meta_vocab_size: " + str(meta_vocab_size))
+
     model_args['vocab_size'] = meta_vocab_size if meta_vocab_size is not None else VOCAB_SIZE
     gptconf = GPTConfig(**model_args)
     model = GPT(gptconf)
