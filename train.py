@@ -125,7 +125,6 @@ combinedSets = set(pos_train_data).union(set(neg_train_data)).union(set(pos_val_
 VOCAB_SIZE = len(combinedSets)
 def get_batch(split): 
     posOrNeg = np.random.randint(2, size=batch_size)
-    print("batch size: " + str(batch_size))
     xs = []
     ys = []
     for i in range(batch_size):  
@@ -140,15 +139,11 @@ def get_batch(split):
 
         index1 = torch.randint(len(data) - block_size,(1,))[0]
         
-        print("index 1: " + str(index1))
         xs.append(torch.from_numpy((data[index1:index1+block_size]).astype(np.int64)))
         ys.append(torch.tensor(np.array([posOrNeg[i]]).astype(np.int64)))
-    print("xs[0]: " + str(xs[0]))
-    print("ys[0]: " + str(ys[0]))
 
     x=torch.stack(xs)
     y=torch.stack(ys)
-    print("done with get_batch")
     if device_type == 'cuda':
         # pin arrays x,y, which allows us to move them to GPU asynchronously (non_blocking=True)
         x, y = x.pin_memory().to(device, non_blocking=True), y.pin_memory().to(device, non_blocking=True)
