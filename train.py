@@ -144,6 +144,7 @@ def get_batch(split):
 
     x=torch.stack(xs)
     y=torch.stack(ys)
+    print("x head: " + str(x[:2])+", y head: " + str("y head: " + str(y[:2])))
     if device_type == 'cuda':
         # pin arrays x,y, which allows us to move them to GPU asynchronously (non_blocking=True)
         x, y = x.pin_memory().to(device, non_blocking=True), y.pin_memory().to(device, non_blocking=True)
