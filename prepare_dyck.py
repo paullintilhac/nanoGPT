@@ -37,10 +37,7 @@ train_dat2[1] = 0
 val_dat1[1] = 1
 val_dat2[1]=0
 unique_chars = set(train_dat1[0].apply(list).sum())
-unique_chars.remove("E")
-unique_chars.remove("N")
-unique_chars.remove("D")
-unique_chars.remove(" ")
+
 unique_chars.add("#")
 vocab_size = len(unique_chars)
 
