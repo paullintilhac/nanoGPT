@@ -252,9 +252,9 @@ def get_lr(it):
     return min_lr + coeff * (learning_rate - min_lr)
 
 # logging
-print("master process: "  + str(master_process))
+#print("master process: "  + str(master_process))
 if wandb_log and master_process:
-    print("INITIALIZING WANDB")
+    #print("INITIALIZING WANDB")
     import wandb
     wandb.init(project=wandb_project, name=wandb_run_name, config=config)
 
